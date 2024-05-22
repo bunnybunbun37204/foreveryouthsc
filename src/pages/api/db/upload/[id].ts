@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { app } from "../../../../firebase/server";
 import { getFirestore } from "firebase-admin/firestore";
-import { Buffer } from 'buffer'; // Import buffer
+import { Buffer } from "buffer"; // Import buffer
 
 const db = getFirestore(app);
 const foreveryouthRef = db.collection("foreveryouth");
@@ -9,7 +9,6 @@ const foreveryouthRef = db.collection("foreveryouth");
 interface UploadResponse {
   key: string;
 }
-
 
 export const POST: APIRoute = async ({ params, redirect, request }) => {
   const formData = await request.formData();
@@ -24,7 +23,7 @@ export const POST: APIRoute = async ({ params, redirect, request }) => {
 
   // Read file and convert to base64
   const arrayBuffer = await imageFile.arrayBuffer();
-  const base64Image = Buffer.from(arrayBuffer).toString('base64');
+  const base64Image = Buffer.from(arrayBuffer).toString("base64");
   const response = await fetch(
     "https://smo-api.bunyawatapp37204.workers.dev/images/upload",
     {
@@ -37,7 +36,7 @@ export const POST: APIRoute = async ({ params, redirect, request }) => {
         width: 300,
         height: 300,
       }),
-    },
+    }
   );
   const jsonData: unknown = await response.json();
   const _data = jsonData as UploadResponse;
@@ -58,7 +57,7 @@ export const POST: APIRoute = async ({ params, redirect, request }) => {
   try {
     await foreveryouthRef.doc(params.id).create({
       description: description,
-      image_url: img
+      image_url: img,
     });
   } catch (error) {
     return new Response("Something went wrong", {
