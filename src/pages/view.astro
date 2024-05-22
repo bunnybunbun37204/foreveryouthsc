@@ -32,7 +32,9 @@ if (!user) {
       <img id="special-image" src="/images/images.png" alt="Special Image" />
     </div>
     <div id="countdown-container" class="hidden text-center">
-      <h2 class="text-xl md:text-2xl font-bold mb-4 font-cmu">Countdown to Special Day</h2>
+      <h2 class="text-xl md:text-2xl font-bold mb-4 font-cmu">
+        Countdown to Special Day
+      </h2>
       <p id="countdown" class="text-lg md:text-xl font-cmu"></p>
     </div>
     <form action="/api/auth/signout" class="absolute top-4 right-4">
@@ -59,8 +61,12 @@ if (!user) {
       countdownContainer?.classList.remove("hidden");
       const timeDifference = configDate.getTime() - currentDate.getTime();
       const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+      const hours = Math.floor(
+        (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
+      const minutes = Math.floor(
+        (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+      );
       const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
 
       countdownElement!.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
