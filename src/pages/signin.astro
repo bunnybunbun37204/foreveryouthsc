@@ -15,23 +15,27 @@ if (Astro.cookies.has("__session")) {
 ---
 
 <Layout title="Sign in">
+    <img
+    src="/images/smp.jpg"
+    alt="Brand Logo"
+    class="absolute top-4 right-4 w-12 h-12 rounded-full"
+  />
   <div
-    class="items-center flex flex-col p-6 min-h-screen justify-center bg-gradient-to-b from-blue01 to-blue02 text-yellow01 text-shadow-glow"
+    class="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue01 to-blue02 text-yellow01 text-shadow-glow"
   >
-    <h1 class="text-4xl font-bold mb-4 font-cmu">Sign in</h1>
+
+    <h1 class="text-4xl font-bold mb-6 font-cmu">Foreveryouth</h1>
+    <h2 class="text-xl font-bold mb-4 font-cmu">sccu farewell</h2>
     <button
       id="google"
       class="font-cmu flex items-center justify-center p-2 bg-blue01 text-yellow01 rounded hover:bg-blue02"
     >
-      <img
-        src="/images/images.png"
-        alt="Google Logo"
-        class="w-6 h-6 mr-2"
-      />
+      <img src="/images/images.png" alt="Google Logo" class="w-6 h-6 mr-2" />
       Sign in with Google
     </button>
   </div>
 </Layout>
+
 <script>
   import {
     getAuth,
