@@ -1,0 +1,79 @@
+---
+import { app } from "../firebase/server";
+import { getAuth } from "firebase-admin/auth";
+import Layout from "../layouts/Layout.astro";
+
+const auth = getAuth(app);
+
+/* Check current session */
+if (!Astro.cookies.has("__session")) {
+  return Astro.redirect("/signin");
+}
+const sessionCookie = Astro.cookies.get("__session")?.value ?? "";
+const decodedCookie = await auth.verifySessionCookie(sessionCookie);
+const user = await auth.getUser(decodedCookie.uid);
+
+if (!user) {
+  return Astro.redirect("/signin");
+}
+
+// Config date (YYYY-MM-DD format)
+---
+
+<Layout title="dashboard">
+  <div
+    class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue01 to-blue02 text-yellow01 text-shadow-glow p-8"
+  >
+    <h1 class="text-2xl md:text-4xl font-bold mb-6 font-cmu">
+      Welcome {user.displayName}
+    </h1>
+    <p class="text-lg md:text-xl mb-4 font-cmu">We are happy to see you here</p>
+    <div id="image-container" class="hidden">
+      <img id="special-image" src="/images/images.png" alt="Special Image" />
+    </div>
+    <div id="countdown-container" class="hidden text-center">
+      <h2 class="text-xl md:text-2xl font-bold mb-4 font-cmu">Countdown to Special Day</h2>
+      <p id="countdown" class="text-lg md:text-xl font-cmu"></p>
+    </div>
+    <form action="/api/auth/signout" class="absolute top-4 right-4">
+      <button
+        type="submit"
+        class="p-2 bg-blue01 text-yellow01 rounded hover:bg-blue02"
+        >Sign out</button
+      >
+    </form>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const configDate = new Date("2027-05-30");
+    const currentDate = new Date();
+    const imageContainer = document.getElementById("image-container");
+    const countdownContainer = document.getElementById("countdown-container");
+    const countdownElement = document.getElementById("countdown");
+
+    if (currentDate.toDateString() === configDate.toDateString()) {
+      imageContainer?.classList.remove("hidden");
+    } else {
+      countdownContainer?.classList.remove("hidden");
+      const timeDifference = configDate.getTime() - currentDate.getTime();
+      const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+      countdownElement!.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+      setInterval(() => {
+        const now = new Date();
+        const diff = configDate.getTime() - now.getTime();
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        countdownElement!.textContent = `${d}d ${h}h ${m}m ${s}s`;
+      }, 1000);
+    }
+  });
+</script>
