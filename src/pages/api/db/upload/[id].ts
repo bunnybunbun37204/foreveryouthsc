@@ -2,9 +2,11 @@ import type { APIRoute } from "astro";
 import { app } from "../../../../firebase/server";
 import { getFirestore } from "firebase-admin/firestore";
 import { Buffer } from "buffer"; // Import buffer
+import { getAuth } from "firebase-admin/auth";
 
 const db = getFirestore(app);
 const foreveryouthRef = db.collection("foreveryouth");
+const auth = getAuth(app);
 
 interface UploadResponse {
   key: string;
@@ -24,6 +26,7 @@ export const POST: APIRoute = async ({ params, redirect, request }) => {
   // Read file and convert to base64
   const arrayBuffer = await imageFile.arrayBuffer();
   const base64Image = Buffer.from(arrayBuffer).toString("base64");
+  const user = await auth.getUser(params.id ?? "");
   const response = await fetch(
     "https://smo-api.bunyawatapp37204.workers.dev/images/upload",
     {
@@ -58,6 +61,7 @@ export const POST: APIRoute = async ({ params, redirect, request }) => {
     await foreveryouthRef.doc(params.id).create({
       description: description,
       image_url: img,
+      email: user.email,
     });
   } catch (error) {
     return new Response("Something went wrong", {
@@ -65,7 +69,7 @@ export const POST: APIRoute = async ({ params, redirect, request }) => {
     });
   }
 
-  return redirect("/dashboard");
+  return redirect("/view");
 };
 
 export const DELETE: APIRoute = async ({ params, redirect }) => {
@@ -83,5 +87,5 @@ export const DELETE: APIRoute = async ({ params, redirect }) => {
     });
   }
 
-  return redirect("/dashboard");
+  return redirect("/view");
 };

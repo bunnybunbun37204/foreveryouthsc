@@ -2,6 +2,7 @@
 import { app } from "../firebase/server";
 import { getAuth } from "firebase-admin/auth";
 import Layout from "../layouts/Layout.astro";
+import { getFirestore } from "firebase-admin/firestore";
 
 const auth = getAuth(app);
 
@@ -17,30 +18,52 @@ if (!user) {
   return Astro.redirect("/signin");
 }
 
+const db = getFirestore(app);
+const foreveryouthSnapshot = await db
+  .collection("foreveryouth")
+  .doc(user.uid)
+  .get();
+const foreveryouth = foreveryouthSnapshot.data();
+if (!foreveryouth) {
+  return Astro.redirect("/dashboard");
+}
+const image_url = foreveryouth.image_url;
+const desc = foreveryouth.description;
 // Config date (YYYY-MM-DD format)
 ---
 
 <Layout title="dashboard">
   <div
-    class="min-h-screen flex flex-col items-center justify-center  text-yellow01 text-shadow-glow p-8"
+    class="min-h-screen flex flex-col items-center justify-center text-yellow01 text-shadow-glow p-8"
   >
-    <h1 class="text-2xl md:text-4xl font-bold mb-6 font-cmu">
+    <h1 class="text-3xl md:text-5xl font-bold mb-6 font-cmu">
       Welcome {user.displayName}
     </h1>
-    <p class="text-lg md:text-xl mb-4 font-cmu">We are happy to see you here</p>
-    <div id="image-container" class="hidden">
-      <img id="special-image" src="/images/images.png" alt="Special Image" />
+    <p class="text-lg md:text-2xl mb-6 font-cmu text-center">
+      We are happy to see you here
+    </p>
+
+    <div id="image-container" class="flex-col items-center hidden">
+      <img
+        id="special-image"
+        class="rounded-lg shadow-lg mb-4"
+        src={image_url}
+        alt="Special Image"
+      />
+      <div class="text-xl font-cmu text-center max-w-lg">{desc}</div>
     </div>
-    <div id="countdown-container" class="hidden text-center">
-      <h2 class="text-xl md:text-2xl font-bold mb-4 font-cmu">
+
+    <div id="countdown-container" class="hidden text-center mt-6">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4 font-cmu">
         Countdown to Special Day
       </h2>
       <p id="countdown" class="text-lg md:text-xl font-cmu"></p>
     </div>
+
     <form action="/api/auth/signout" class="absolute top-4 right-4">
       <button
         type="submit"
-        class="p-2 bg-blue01 text-yellow01 rounded hover:bg-blue02"
+        class="p-2 bg-blue01 text-yello02 rounded hover:bg-yellow02 transition"
         >Sign out</button
       >
     </form>
@@ -49,7 +72,7 @@ if (!user) {
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const configDate = new Date("2027-05-30");
+    const configDate = new Date("2024-05-23");
     const currentDate = new Date();
     const imageContainer = document.getElementById("image-container");
     const countdownContainer = document.getElementById("countdown-container");
@@ -57,29 +80,27 @@ if (!user) {
 
     if (currentDate.toDateString() === configDate.toDateString()) {
       imageContainer?.classList.remove("hidden");
+      imageContainer?.classList.add("flex");
     } else {
       countdownContainer?.classList.remove("hidden");
-      const timeDifference = configDate.getTime() - currentDate.getTime();
-      const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor(
-        (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      );
-      const minutes = Math.floor(
-        (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
-      );
-      const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-
-      countdownElement!.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-      setInterval(() => {
+      const updateCountdown = () => {
         const now = new Date();
-        const diff = configDate.getTime() - now.getTime();
-        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const s = Math.floor((diff % (1000 * 60)) / 1000);
-        countdownElement!.textContent = `${d}d ${h}h ${m}m ${s}s`;
-      }, 1000);
+        const timeDifference = configDate.getTime() - now.getTime();
+
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+        countdownElement!.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      };
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
     }
   });
 </script>
