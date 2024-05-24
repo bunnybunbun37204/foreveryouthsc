@@ -33,8 +33,31 @@ if (Astro.cookies.has("__session")) {
       />
       Sign in with Google
     </button>
+    <div id="loader" class="hidden absolute inset-0 flex items-center justify-center">
+      <div class="loader"></div>
+    </div>
   </div>
 </Layout>
+
+<style>
+.loader {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: #09f;
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
 
 <script>
   import {
@@ -49,18 +72,27 @@ if (Astro.cookies.has("__session")) {
   auth.setPersistence(inMemoryPersistence);
 
   const googleSignin = document.querySelector("#google");
-  googleSignin?.addEventListener("click", async () => {
-    const provider = new GoogleAuthProvider();
-    const userCredential = await signInWithPopup(auth, provider);
-    const idToken = await userCredential.user.getIdToken();
-    const res = await fetch("/api/auth/signin", {
-      headers: {
-        Authorization: `Bearer ${idToken}`,
-      },
-    });
+  const loader = document.querySelector("#loader");
 
-    if (res.redirected) {
-      window.location.assign(res.url);
+  googleSignin?.addEventListener("click", async () => {
+    loader?.classList.remove("hidden");
+    try {
+      const provider = new GoogleAuthProvider();
+      const userCredential = await signInWithPopup(auth, provider);
+      const idToken = await userCredential.user.getIdToken();
+      const res = await fetch("/api/auth/signin", {
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+
+      if (res.redirected) {
+        window.location.assign(res.url);
+      }
+    } catch (error) {
+      console.error("Sign-in failed", error);
+    } finally {
+      loader?.classList.add("hidden");
     }
   });
 </script>
