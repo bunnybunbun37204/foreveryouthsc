@@ -2,6 +2,7 @@
 import { app } from "../firebase/server";
 import { getAuth } from "firebase-admin/auth";
 import Layout from "../layouts/Layout.astro";
+import { getFirestore } from "firebase-admin/firestore";
 
 const auth = getAuth(app);
 
@@ -17,6 +18,15 @@ const uid = user.uid;
 if (!user) {
   return Astro.redirect("/signin");
 }
+
+const db = getFirestore(app);
+const foreveryouthSnapshot = await db
+  .collection("foreveryouth")
+  .doc(user.uid)
+  .get();
+const foreveryouth = foreveryouthSnapshot.data();
+if (foreveryouth) {
+  return Astro.redirect("/view");
 ---
 
 <Layout title="dashboard">
