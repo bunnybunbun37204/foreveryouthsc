@@ -79,6 +79,28 @@ if (!user) {
       const descriptionInput = document.getElementById("description");
       const loader = document.getElementById("loader");
 
+      function compressImage(file, maxSizeMB, callback) {
+        const maxSizeBytes = maxSizeMB * 1024 * 1024;
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            const ratio = Math.min(1, maxSizeBytes / (img.width * img.height));
+            canvas.width = img.width * ratio;
+            canvas.height = img.height * ratio;
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.8); // Adjust the quality as needed
+            callback(dataUrl);
+          };
+        };
+      }
+
       if (form && imageInput && descriptionInput) {
         form.addEventListener("submit", async (event) => {
           event.preventDefault();
@@ -97,13 +119,10 @@ if (!user) {
           loader.classList.remove("hidden"); // Show loader
 
           const imageFile = imageInput.files[0];
-          const reader = new FileReader();
 
-          reader.onloadend = async () => {
-            const base64Image = reader.result?.toString().split(",")[1];
-
+          compressImage(imageFile, 4, async (base64Image) => {
             if (!base64Image) {
-              alert("Error reading image file.");
+              alert("Error compressing image file.");
               loader.classList.add("hidden"); // Hide loader on error
               return;
             }
@@ -117,7 +136,7 @@ if (!user) {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
-                    body: base64Image,
+                    body: base64Image.split(",")[1],
                     width: 300,
                     height: 300,
                   }),
@@ -153,9 +172,7 @@ if (!user) {
             } finally {
               loader.classList.add("hidden"); // Hide loader after submission
             }
-          };
-
-          reader.readAsDataURL(imageFile);
+          });
         });
       } else {
         console.error("Form elements not found.");
