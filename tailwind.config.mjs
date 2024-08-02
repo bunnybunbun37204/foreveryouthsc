@@ -8,27 +8,19 @@ export default {
         blue02: "#002747",
         yellow01: "#F3CC72",
         yellow02: "#FFE6AB",
-      },
-      textShadow: {
-        glow: "0 0 2px #F3CC72, 0 0 2px #F3CC72, 0 0 2px #F3CC72, 0 0 2px #F3CC72",
+        pinknivut: "#EB9096",
+        bluenivut: "#183F86",
+        yellownivut: "#EFD08D",
+        greennivut: "#67AB88"
       },
       fontFamily: {
         cmu: ["CMU", "serif"],
+        sov: ["SOV", "serif"],
+        pk: ["PK", "serif"]
       },
       backgroundImage: {
-        "main-bg": "url('/images/bg.PNG')",
+        "main-bg": "url('/images/bg.PNG)",
       },
     },
   },
-  plugins: [
-    function ({ addUtilities }) {
-      const newUtilities = {
-        ".text-shadow-glow": {
-          textShadow:
-            "0 0 2px #F3CC72, 0 0 4px #F3CC72, 0 0 4px #F3CC72, 0 0 2px #F3CC72",
-        },
-      };
-      addUtilities(newUtilities, ["responsive", "hover"]);
-    },
-  ],
 };
