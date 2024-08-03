@@ -21,18 +21,18 @@ if (!user) {
 
 <Layout title="dashboard">
   <div
-    class="min-h-screen flex flex-col items-center justify-center text-yellow01 text-shadow-glow p-8"
+    class="min-h-screen flex flex-col items-center justify-center text-yellownivut text-shadow-glow p-8"
   >
-    <h1 class="text-2xl md:text-4xl font-bold mb-6 font-cmu">
+    <h1 class="text-6xl md:text-4xl font-normal mb-6 font-sov text-shadow">
       Welcome {user.displayName}
     </h1>
-    <p class="text-lg md:text-xl mb-4 font-cmu">We are happy to see you here</p>
+    <p class="text-lg md:text-xl mb-4 font-pk font-bold">We are happy to see you here</p>
     <form
       enctype="multipart/form-data"
-      class="w-full max-w-md px-4 py-6 bg-blue02 rounded shadow-lg"
+      class="w-full max-w-md px-4 py-6 bg-bluenivut rounded shadow-lg"
     >
-      <label for="description" class="block text-sm font-medium"
-        >Description:</label
+      <label for="description" class="block text-4xl font-normal font-sov"
+        >Message</label
       >
       <input
         type="text"
@@ -40,7 +40,7 @@ if (!user) {
         name="description"
         class="w-full text-black mt-1 p-2 border border-gray-300 rounded"
       /><br />
-      <label for="image" class="block text-sm font-medium mt-4"
+      <label for="image" class="block text-4xl font-normal font-sov mt-4"
         >Select image:</label
       >
       <input
@@ -51,14 +51,14 @@ if (!user) {
       /><br />
       <button
         type="submit"
-        class="w-full mt-4 p-2 bg-blue01 text-yellow01 rounded hover:bg-blue02"
+        class="w-full mt-4 p-2 bg-blue01 text-yellownivut font-sov rounded text-3xl hover:bg-blue02"
         >Upload</button
       >
     </form>
     <form action="/api/auth/signout" class="absolute top-4 right-4">
       <button
         type="submit"
-        class="p-2 bg-blue01 text-yellow01 rounded hover:bg-blue02"
+        class="p-2 bg-bluenivut text-yellownivut font-pk text-md rounded hover:bg-blue02"
         >Sign out</button
       >
     </form>
