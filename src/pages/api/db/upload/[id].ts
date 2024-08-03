@@ -4,7 +4,7 @@ import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
 
 const db = getFirestore(app);
-const foreveryouthRef = db.collection("foreveryouth");
+const foreveryouthRef = db.collection("foreveryouth-rpkm");
 const auth = getAuth(app);
 
 export const POST: APIRoute = async ({ params, redirect, request }) => {

@@ -20,7 +20,7 @@ if (!user) {
 
 const db = getFirestore(app);
 const foreveryouthSnapshot = await db
-  .collection("foreveryouth")
+  .collection("foreveryouth-rpkm")
   .doc(user.uid)
   .get();
 const foreveryouth = foreveryouthSnapshot.data();

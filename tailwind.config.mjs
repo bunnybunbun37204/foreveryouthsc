@@ -11,16 +11,29 @@ export default {
         pinknivut: "#EB9096",
         bluenivut: "#183F86",
         yellownivut: "#EFD08D",
-        greennivut: "#67AB88"
+        greennivut: "#67AB88",
       },
       fontFamily: {
         cmu: ["CMU", "serif"],
         sov: ["SOV", "serif"],
-        pk: ["PK", "serif"]
+        pk: ["PK", "serif"],
       },
       backgroundImage: {
-        "main-bg": "url('/images/bg.PNG)",
+        "main-bg": "url('/images/bg-nivut.png')",
+      },
+      textShadow: {
+        default: "2px 2px 4px rgba(0, 0, 0, 0.9)", // Customize the shadow here
       },
     },
   },
+  plugins: [
+    function ({ addUtilities }) {
+      const newUtilities = {
+        ".text-shadow": {
+          textShadow: "2px 2px 4px rgba(0, 0, 0, 0.9)", // Customize the shadow here
+        },
+      };
+      addUtilities(newUtilities, ["responsive", "hover"]);
+    },
+  ],
 };
